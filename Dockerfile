@@ -7,6 +7,7 @@ RUN ls /sbin && ls /usr/bin
 FROM lambci/lambda:nodejs10.x AS source
 
 FROM lambci/lambda:nodejs10.x
+USER root
 COPY --from=pkgMgr / /
 COPY --from=source /etc/passwd /etc
 ENV PATH=$PATH:/sbin

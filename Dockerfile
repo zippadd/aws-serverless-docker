@@ -1,5 +1,5 @@
 FROM zippadd/lambda:nodejs10.x
-RUN yum install -y shadow-utils util-linux python-pip icu && \
+RUN yum install -y shadow-utils util-linux python-pip icu zip && \
   yum install -y gcc python-devel && \
   pip --no-cache-dir install --upgrade pip setuptools && \
   pip --no-cache-dir install awscli && aws configure set default.region us-east-1 && aws configure set default.s3.max_concurrent_requests 50 && \

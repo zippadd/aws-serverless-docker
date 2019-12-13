@@ -1,31 +1,35 @@
-FROM zippadd/lambda:nodejs10.x
-RUN yum install -y shadow-utils util-linux python-pip icu zip perl jq && \
-  yum install -y gcc python-devel bzip2 make && \
-  pip --no-cache-dir install --upgrade pip setuptools && \
-  pip --no-cache-dir install awscli && aws configure set default.region us-east-1 && aws configure set default.s3.max_concurrent_requests 50 && \
-  pip --no-cache-dir install aws-sam-cli && \
-  npm install npm@latest -g && \
-  curl http://ftp.gnu.org/gnu/parallel/parallel-latest.tar.bz2 --output parallel.tar.bz2 && \
-  mkdir parallel && \
-  tar -xvjf parallel.tar.bz2 -C parallel --strip 1 && \
-  cd parallel && \
-  ./configure && \
-  make install && \
-  cd .. && \
-  rm -Rf parallel* && \
-  mkdir ~/.parallel && \
-  touch ~/.parallel/will-cite && \
-  yum remove -y gcc python-devel python-pip bzip2 make && \
-  yum autoremove -y && \
+FROM amazonlinux:2
+
+RUN yum list yum && \
+  yum install -y --installroot=/installroot --releasever=2 shadow-utils tar gzip zip && \
+  yum install -y --installroot=/installroot python3 && \
+  yum install -y python3-devel gcc && \
+  pip3 --no-cache-dir install --upgrade pip setuptools && \ 
+  pip3 --no-cache-dir install --root /installroot awscli && \
+  pip3 --no-cache-dir install --root /installroot aws-sam-cli && \
+  yum remove -y python3-devel gcc && \
+  yum autoremove --installroot=/installroot -y && \
   yum clean -y all && \
-  rm -rf /var/cache/yum && \
+  rm -rf /var/cache/yum
+
+FROM lambci/lambda:nodejs12.x
+
+USER root
+ENV PATH=$PATH:/sbin
+COPY --from=0 /installroot/etc /etc/
+COPY --from=0 /installroot/sbin /sbin/
+COPY --from=0 /installroot/usr /usr/
+
+RUN aws configure set default.region us-east-1 && aws configure set default.s3.max_concurrent_requests 50 && \
+  npm install npm@latest -g && \
   npm cache clean --force && \
   echo AWS CLI: `aws --version` && \
   echo SAM CLI: `sam --version` && \
   echo Node: `node --version` && \
   echo NPM: `npm --version` && \
-  echo Parallel: `parallel --version`
-USER root
-ENV PATH=$PATH:/sbin
+  echo Useradd: `useradd --help` && \
+  echo Usermod: `usermod --help` && \
+  echo Groupadd: `groupadd --help`
+
 ENTRYPOINT []
 CMD ["/var/lang/bin/node", "-e", "setInterval(function(){}, 24 * 60 * 60 * 1000);"]

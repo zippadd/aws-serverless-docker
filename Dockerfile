@@ -21,6 +21,7 @@ COPY --from=0 /installroot/sbin /sbin/
 COPY --from=0 /installroot/usr /usr/
 
 RUN aws configure set default.region us-east-1 && aws configure set default.s3.max_concurrent_requests 50 && \
+  chown -R root /tmp && chgrp -R root /tmp && chmod -R 1777 /tmp && \
   npm install npm@latest -g && \
   npm cache clean --force && \
   echo AWS CLI: `aws --version` && \

@@ -1,4 +1,4 @@
-./localBuild.sh
+./build.sh
 container=`docker create aws-serverless-node-docker:latest`
 echo $container
 docker start -a $container

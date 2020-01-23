@@ -5,8 +5,8 @@ RUN yum list yum && \
   yum install -y --installroot=/installroot python3 && \
   yum install -y python3-devel gcc && \
   pip3 --no-cache-dir install --upgrade pip setuptools && \ 
-  pip3 --no-cache-dir install --root /installroot awscli && \
-  pip3 --no-cache-dir install --root /installroot aws-sam-cli && \
+  pip3 --no-cache-dir install --root /installroot awscli==1.17.7 && \
+  pip3 --no-cache-dir install --root /installroot aws-sam-cli==0.40.0 && \
   yum remove -y python3-devel gcc && \
   yum autoremove --installroot=/installroot -y && \
   yum clean -y all && \

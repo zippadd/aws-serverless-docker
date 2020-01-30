@@ -1,7 +1,7 @@
 FROM amazonlinux:2
 
 RUN yum list yum && \
-  yum install -y --installroot=/installroot --releasever=2 shadow-utils tar gzip zip && \
+  yum install -y --installroot=/installroot --releasever=2 shadow-utils tar gzip zip findutils && \
   yum install -y --installroot=/installroot python3 && \
   yum install -y python3-devel gcc && \
   pip3 --no-cache-dir install --upgrade pip setuptools && \ 

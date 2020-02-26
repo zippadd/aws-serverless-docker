@@ -1,12 +1,15 @@
 FROM amazonlinux:2
 
+ENV AWS_CLI_VERSION 1.18.8
+ENV AWS_SAM_CLI_VERSION 0.43.0
+
 RUN yum list yum && \
   yum install -y --installroot=/installroot --releasever=2 shadow-utils tar gzip zip findutils && \
   yum install -y --installroot=/installroot python3 && \
   yum install -y python3-devel gcc && \
   pip3 --no-cache-dir install --upgrade pip setuptools && \ 
-  pip3 --no-cache-dir install --root /installroot awscli==1.17.9 && \
-  pip3 --no-cache-dir install --root /installroot aws-sam-cli==0.40.0 && \
+  pip3 --no-cache-dir install --root /installroot awscli==$AWS_CLI_VERSION && \
+  pip3 --no-cache-dir install --root /installroot aws-sam-cli==$AWS_SAM_CLI_VERSION && \
   yum remove -y python3-devel gcc && \
   yum autoremove --installroot=/installroot -y && \
   yum clean -y all && \
